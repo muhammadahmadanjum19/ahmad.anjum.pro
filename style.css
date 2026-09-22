@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ANJUM.PRO — LUXURY REFINED OBSIDIAN ENGINE WITH CINEMATIC LOADER
+   ANJUM.PRO — LUXURY REFINED OBSIDIAN ENGINE (NATIVE CURSOR)
    ========================================================================== */
 
 :root {
@@ -24,13 +24,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-}
-
-/* Hide default cursor on desktop viewports to showcase custom pointer */
-@media (min-width: 768px) {
-    body, a, button, input {
-        cursor: none !important;
-    }
 }
 
 html {
@@ -198,60 +191,6 @@ body:not(.loaded) .header-frameless {
 body.loaded .glass-card,
 body.loaded .header-frameless {
     animation: luxuryFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* --------------------------------------------------------------------------
-   CUSTOM NEON CURSOR & TRAILING GLOW ENGINE
-   -------------------------------------------------------------------------- */
-.custom-cursor {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 24px;
-    height: 24px;
-    pointer-events: none;
-    z-index: 99999;
-    transform: translate(-2px, -2px);
-    will-change: left, top;
-}
-
-.cursor-svg {
-    width: 24px;
-    height: 24px;
-    display: block;
-    filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.9));
-}
-
-.cursor-neon-glow {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 140px;
-    height: 140px;
-    margin-left: -70px;
-    margin-top: -70px;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.35) 0%, rgba(232, 121, 249, 0.1) 45%, transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 99998;
-    will-change: left, top;
-    mix-blend-mode: screen;
-}
-
-.custom-cursor.hovered .cursor-svg {
-    transform: scale(1.3) rotate(-10deg);
-    transition: transform 0.2s ease;
-}
-
-.custom-cursor.clicked .cursor-svg {
-    transform: scale(0.85);
-    transition: transform 0.1s ease;
-}
-
-@media (max-width: 767px) {
-    .custom-cursor, .cursor-neon-glow {
-        display: none !important;
-    }
 }
 
 /* --------------------------------------------------------------------------
