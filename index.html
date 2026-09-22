@@ -156,7 +156,7 @@
         </footer>
     </main>
 
-    <!-- Clean Script Engine (Loader & Shimmer Only) -->
+    <!-- Fail-Safe Script Engine -->
     <script>
         const dismissLoader = () => {
             const loader = document.getElementById('page-loader');
@@ -170,7 +170,6 @@
         setTimeout(dismissLoader, 1000);
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Button shimmer tracking
             const buttons = document.querySelectorAll('.btn-premium');
             buttons.forEach(btn => {
                 btn.addEventListener('mousemove', e => {
