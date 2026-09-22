@@ -32,14 +32,6 @@
         </div>
     </div>
 
-    <!-- Custom Neon Cursor Elements -->
-    <div class="custom-cursor" id="custom-cursor">
-        <svg viewBox="0 0 24 24" class="cursor-svg">
-            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" fill="#ffffff" stroke="#a855f7" stroke-width="1.5" stroke-linejoin="round"/>
-        </svg>
-    </div>
-    <div class="cursor-neon-glow" id="cursor-glow"></div>
-
     <!-- Advanced Interactive Background Engine -->
     <div class="ambient-light"></div>
     <div class="cyber-grid-overlay"></div>
@@ -164,9 +156,8 @@
         </footer>
     </main>
 
-    <!-- Fail-Safe Script Engine -->
+    <!-- Clean Script Engine (Loader & Shimmer Only) -->
     <script>
-        // Guaranteed Execution Trigger (Fires after 1000ms max, regardless of external asset states)
         const dismissLoader = () => {
             const loader = document.getElementById('page-loader');
             if (loader && !loader.classList.contains('fade-out')) {
@@ -176,43 +167,23 @@
         };
 
         window.addEventListener('load', dismissLoader);
-        setTimeout(dismissLoader, 1000); // Fail-safe timer guarantees unmasking after exactly 1 second
+        setTimeout(dismissLoader, 1000);
 
         document.addEventListener('DOMContentLoaded', () => {
-            const cursor = document.getElementById('custom-cursor');
-            const glow = document.getElementById('cursor-glow');
-
-            window.addEventListener('mousemove', e => {
-                const x = e.clientX;
-                const y = e.clientY;
-                
-                cursor.style.left = `${x}px`;
-                cursor.style.top = `${y}px`;
-                glow.style.left = `${x}px`;
-                glow.style.top = `${y}px`;
-
-                // Button shimmer tracking
-                document.querySelectorAll('.btn-premium').forEach(btn => {
+            // Button shimmer tracking
+            const buttons = document.querySelectorAll('.btn-premium');
+            buttons.forEach(btn => {
+                btn.addEventListener('mousemove', e => {
                     const rect = btn.getBoundingClientRect();
-                    const bx = x - rect.left;
-                    const by = y - rect.top;
-                    btn.style.setProperty('--mouse-x', `${bx}px`);
-                    btn.style.setProperty('--mouse-y', `${by}px`);
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    btn.style.setProperty('--mouse-x', `${x}px`);
+                    btn.style.setProperty('--mouse-y', `${y}px`);
                 });
             });
 
-            // Interactive scale on click & hover
-            document.querySelectorAll('a, button').forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
-            });
-
-            document.addEventListener('mousedown', () => cursor.classList.add('clicked'));
-            document.addEventListener('mouseup', () => cursor.classList.remove('clicked'));
-
-            // Executive Console Telemetry Badge
             console.log(
-                '%c ANJUM.PRO %c Cinematic Engine & Custom Cursor Active ',
+                '%c ANJUM.PRO %c Cinematic Engine Active (Native Cursor) ',
                 'background: #a855f7; color: #ffffff; font-weight: bold; padding: 4px 8px; border-radius: 4px 0 0 4px;',
                 'background: #030206; color: #e9d5ff; padding: 4px 8px; border-radius: 0 4px 4px 0;'
             );
