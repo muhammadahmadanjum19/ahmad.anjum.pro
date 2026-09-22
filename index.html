@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <!-- 1.5-Second Cinematic Opening Sequence -->
+    <!-- 2.0-Second Cinematic Opening Sequence -->
     <div id="page-loader" class="page-loader">
         <div class="loader-backdrop-scan"></div>
         <div class="loader-content">
@@ -72,7 +72,13 @@
                 </a>
                 <a href="https://signal.me/#eu/giFS_uNofX14Y6HrnS8mdsIUWYYcZF1wOnW-ahIKJu_mPaOoOz5G_Kz8alIGQmPI" target="_blank" rel="noopener noreferrer" class="btn-premium">
                     <span class="btn-glow-pill"></span>
-                    <i class="fa-solid fa-lock btn-icon icon-signal" aria-hidden="true"></i>
+                    <span class="btn-icon custom-signal-icon">
+                        <!-- Exact Icon-Only Signal Logo Vector matching reference[span_2](start_span)[span_2](end_span) -->
+                        <svg viewBox="0 0 512 512" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M410.12 170.92C374.32 108.32 309.28 70 236 70 121.08 70 28 163.08 28 278c0 39.52 11.04 76.4 30.24 108.12L28 442l55.88-30.24C115.6 431.04 152.48 442 192 442c114.92 0 207.92-93 207.92-207.92 0-21.28-3.16-41.96-8.8-63.16z" fill="#3B49FF"/>
+                            <circle cx="236" cy="228" r="168" stroke="#3B49FF" stroke-width="38" stroke-linecap="round" stroke-dasharray="42 26"/>
+                        </svg>
+                    </span>
                     <span class="btn-text">Signal</span>
                     <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
                 </a>
@@ -162,7 +168,7 @@
         </footer>
     </main>
 
-    <!-- Fail-Safe Script Engine (1.5-Second Cadence) -->
+    <!-- Fail-Safe Script Engine (2-Second Cadence) -->
     <script>
         const dismissLoader = () => {
             const loader = document.getElementById('page-loader');
@@ -173,7 +179,7 @@
         };
 
         window.addEventListener('load', dismissLoader);
-        setTimeout(dismissLoader, 1500); // Expanded fail-safe timer to 1.5 seconds
+        setTimeout(dismissLoader, 2000);
 
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('.btn-premium');
@@ -188,7 +194,7 @@
             });
 
             console.log(
-                '%c ANJUM.PRO %c Cinematic Engine Active (1.5s Opening) ',
+                '%c ANJUM.PRO %c Cinematic Engine Active (Original Signal Icon Logo) ',
                 'background: #a855f7; color: #ffffff; font-weight: bold; padding: 4px 8px; border-radius: 4px 0 0 4px;',
                 'background: #030206; color: #e9d5ff; padding: 4px 8px; border-radius: 0 4px 4px 0;'
             );
