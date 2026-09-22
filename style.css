@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ANJUM.PRO — LUXURY REFINED OBSIDIAN ENGINE (1.5S OPENING)
+   ANJUM.PRO — LUXURY REFINED OBSIDIAN ENGINE
    ========================================================================== */
 
 :root {
@@ -48,7 +48,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   1.5-SECOND CINEMATIC KINETIC OPENING SEQUENCE
+   2.0-SECOND CINEMATIC KINETIC OPENING SEQUENCE
    -------------------------------------------------------------------------- */
 .page-loader {
     position: fixed;
@@ -74,7 +74,7 @@ body {
     position: absolute;
     inset: 0;
     background: linear-gradient(180deg, transparent 0%, rgba(168, 85, 247, 0.15) 50%, transparent 100%);
-    animation: scanlinePass 1.5s ease-in-out infinite;
+    animation: scanlinePass 2s ease-in-out infinite;
     pointer-events: none;
 }
 
@@ -106,14 +106,14 @@ body {
 .core-ring-1 {
     border-top-color: #a855f7;
     border-bottom-color: #e879f9;
-    animation: loaderSpinClockwise 1.2s linear infinite;
+    animation: loaderSpinClockwise 1.4s linear infinite;
 }
 
 .core-ring-2 {
     inset: -6px;
     border-left-color: #c084fc;
     border-right-color: rgba(168, 85, 247, 0.2);
-    animation: loaderSpinCounter 1.8s linear infinite;
+    animation: loaderSpinCounter 2.2s linear infinite;
 }
 
 .loader-monogram {
@@ -122,7 +122,7 @@ body {
     font-weight: 800;
     color: var(--text-primary);
     letter-spacing: -0.02em;
-    animation: loaderCorePulse 1.2s ease-in-out infinite alternate;
+    animation: loaderCorePulse 1.4s ease-in-out infinite alternate;
 }
 
 .loader-text-wrapper {
@@ -155,7 +155,7 @@ body {
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg, #a855f7, #e879f9);
-    animation: progressLoad 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: progressLoad 2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes loaderSpinClockwise {
@@ -606,7 +606,7 @@ h1.executive-name {
 
 /* Brand Colors with Refined Ambient Glows */
 .icon-email    { color: #38bdf8; filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4)); }
-.icon-signal   { color: #3390ec; filter: drop-shadow(0 0 6px rgba(51, 144, 236, 0.4)); }
+.custom-signal-icon { color: #3366FF; filter: drop-shadow(0 0 6px rgba(51, 102, 255, 0.4)); }
 .icon-telegram { color: #229ed9; filter: drop-shadow(0 0 6px rgba(34, 158, 217, 0.4)); }
 .icon-discord  { color: #5865f2; filter: drop-shadow(0 0 6px rgba(88, 101, 242, 0.4)); }
 .icon-linkedin { color: #0a66c2; filter: drop-shadow(0 0 6px rgba(10, 102, 194, 0.4)); }
