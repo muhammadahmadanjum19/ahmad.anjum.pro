@@ -16,6 +16,9 @@
 </head>
 <body>
 
+    <!-- Cinematic Ripple Eclipse Overlay for Mode Toggle -->
+    <div id="theme-ripple-overlay" class="theme-ripple-overlay"></div>
+
     <!-- 2.0-Second Cinematic Opening Sequence -->
     <div id="page-loader" class="page-loader">
         <div class="loader-backdrop-scan"></div>
@@ -40,6 +43,13 @@
     <div class="ambient-glow-orb orb-3"></div>
 
     <main class="container">
+        <!-- Theme Toggle Switcher -->
+        <div class="theme-switch-wrapper">
+            <button id="theme-toggle-btn" class="theme-toggle-btn" aria-label="Toggle Theme">
+                <i class="fa-solid fa-moon theme-icon" id="theme-icon"></i>
+            </button>
+        </div>
+
         <!-- Profile Header -->
         <header class="header-frameless">
             <div class="avatar-frame">
@@ -73,7 +83,6 @@
                 <a href="https://signal.me/#eu/giFS_uNofX14Y6HrnS8mdsIUWYYcZF1wOnW-ahIKJu_mPaOoOz5G_Kz8alIGQmPI" target="_blank" rel="noopener noreferrer" class="btn-premium">
                     <span class="btn-glow-pill"></span>
                     <span class="btn-icon custom-signal-icon">
-                        <!-- Exact Icon-Only Signal Logo Vector matching reference[span_2](start_span)[span_2](end_span) -->
                         <svg viewBox="0 0 512 512" width="18" height="18" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M410.12 170.92C374.32 108.32 309.28 70 236 70 121.08 70 28 163.08 28 278c0 39.52 11.04 76.4 30.24 108.12L28 442l55.88-30.24C115.6 431.04 152.48 442 192 442c114.92 0 207.92-93 207.92-207.92 0-21.28-3.16-41.96-8.8-63.16z" fill="#3B49FF"/>
                             <circle cx="236" cy="228" r="168" stroke="#3B49FF" stroke-width="38" stroke-linecap="round" stroke-dasharray="42 26"/>
@@ -168,7 +177,7 @@
         </footer>
     </main>
 
-    <!-- Fail-Safe Script Engine (2-Second Cadence) -->
+    <!-- Script Engine (Loader, Shimmer, & Cinematic Ripple Eclipse) -->
     <script>
         const dismissLoader = () => {
             const loader = document.getElementById('page-loader');
@@ -182,6 +191,43 @@
         setTimeout(dismissLoader, 2000);
 
         document.addEventListener('DOMContentLoaded', () => {
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            const themeIcon = document.getElementById('theme-icon');
+            const htmlElement = document.documentElement;
+            const rippleOverlay = document.getElementById('theme-ripple-overlay');
+
+            const savedTheme = localStorage.getItem('anjum_pro_theme');
+            if (savedTheme === 'light') {
+                htmlElement.classList.add('light-mode');
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+            }
+
+            themeBtn.addEventListener('click', (e) => {
+                const rect = themeBtn.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+
+                // Position the ripple overlay origin at the toggle button center
+                rippleOverlay.style.left = `${x}px`;
+                rippleOverlay.style.top = `${y}px`;
+                rippleOverlay.classList.add('active');
+
+                setTimeout(() => {
+                    htmlElement.classList.toggle('light-mode');
+                    if (htmlElement.classList.contains('light-mode')) {
+                        themeIcon.classList.replace('fa-moon', 'fa-sun');
+                        localStorage.setItem('anjum_pro_theme', 'light');
+                    } else {
+                        themeIcon.classList.replace('fa-sun', 'fa-moon');
+                        localStorage.setItem('anjum_pro_theme', 'dark');
+                    }
+                }, 300);
+
+                setTimeout(() => {
+                    rippleOverlay.classList.remove('active');
+                }, 750);
+            });
+
             const buttons = document.querySelectorAll('.btn-premium');
             buttons.forEach(btn => {
                 btn.addEventListener('mousemove', e => {
@@ -194,7 +240,7 @@
             });
 
             console.log(
-                '%c ANJUM.PRO %c Cinematic Engine Active (Original Signal Icon Logo) ',
+                '%c ANJUM.PRO %c Cinematic Ripple Theme Engine Active ',
                 'background: #a855f7; color: #ffffff; font-weight: bold; padding: 4px 8px; border-radius: 4px 0 0 4px;',
                 'background: #030206; color: #e9d5ff; padding: 4px 8px; border-radius: 0 4px 4px 0;'
             );
