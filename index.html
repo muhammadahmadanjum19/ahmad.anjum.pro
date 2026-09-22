@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <!-- 1-Second Cinematic Opening Sequence -->
+    <!-- 1.5-Second Cinematic Opening Sequence -->
     <div id="page-loader" class="page-loader">
         <div class="loader-backdrop-scan"></div>
         <div class="loader-content">
@@ -68,6 +68,12 @@
                     <span class="btn-glow-pill"></span>
                     <i class="fa-solid fa-envelope btn-icon icon-email" aria-hidden="true"></i>
                     <span class="btn-text">Email</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+                <a href="https://signal.me/#eu/giFS_uNofX14Y6HrnS8mdsIUWYYcZF1wOnW-ahIKJu_mPaOoOz5G_Kz8alIGQmPI" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-solid fa-lock btn-icon icon-signal" aria-hidden="true"></i>
+                    <span class="btn-text">Signal</span>
                     <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
                 </a>
                 <a href="https://t.me/muhammad_ahmad_anjum" target="_blank" rel="noopener noreferrer" class="btn-premium">
@@ -156,7 +162,7 @@
         </footer>
     </main>
 
-    <!-- Fail-Safe Script Engine -->
+    <!-- Fail-Safe Script Engine (1.5-Second Cadence) -->
     <script>
         const dismissLoader = () => {
             const loader = document.getElementById('page-loader');
@@ -167,7 +173,7 @@
         };
 
         window.addEventListener('load', dismissLoader);
-        setTimeout(dismissLoader, 1000);
+        setTimeout(dismissLoader, 1500); // Expanded fail-safe timer to 1.5 seconds
 
         document.addEventListener('DOMContentLoaded', () => {
             const buttons = document.querySelectorAll('.btn-premium');
@@ -182,7 +188,7 @@
             });
 
             console.log(
-                '%c ANJUM.PRO %c Cinematic Engine Active (Native Cursor) ',
+                '%c ANJUM.PRO %c Cinematic Engine Active (1.5s Opening) ',
                 'background: #a855f7; color: #ffffff; font-weight: bold; padding: 4px 8px; border-radius: 4px 0 0 4px;',
                 'background: #030206; color: #e9d5ff; padding: 4px 8px; border-radius: 0 4px 4px 0;'
             );
