@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muhammad Ahmad Anjum | Personal Hub</title>
+    
+    <!-- External Typography & Icon Assets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- Stylesheet xLink -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 1-Second Cinematic Opening Sequence -->
+    <div id="page-loader" class="page-loader">
+        <div class="loader-backdrop-scan"></div>
+        <div class="loader-content">
+            <div class="loader-geometric-core">
+                <div class="core-ring core-ring-1"></div>
+                <div class="core-ring core-ring-2"></div>
+                <div class="loader-monogram">MA</div>
+            </div>
+            <div class="loader-text-wrapper">
+                <span class="loader-text">INITIALIZING ENGINE</span>
+                <div class="loader-progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Neon Cursor Elements -->
+    <div class="custom-cursor" id="custom-cursor">
+        <svg viewBox="0 0 24 24" class="cursor-svg">
+            <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" fill="#ffffff" stroke="#a855f7" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+    </div>
+    <div class="cursor-neon-glow" id="cursor-glow"></div>
+
+    <!-- Advanced Interactive Background Engine -->
+    <div class="ambient-light"></div>
+    <div class="cyber-grid-overlay"></div>
+    <div class="ambient-glow-orb orb-1"></div>
+    <div class="ambient-glow-orb orb-2"></div>
+    <div class="ambient-glow-orb orb-3"></div>
+
+    <main class="container">
+        <!-- Profile Header -->
+        <header class="header-frameless">
+            <div class="avatar-frame">
+                <div class="avatar-ring-pulse"></div>
+                <div class="avatar-ring"></div>
+                <div class="avatar-content">MA</div>
+                <div class="verified-badge"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></div>
+            </div>
+            <h1 class="executive-name">Muhammad Ahmad Anjum</h1>
+            <p class="subtitle">Personal Hub</p>
+        </header>
+
+        <!-- Overview Section -->
+        <section class="glass-card">
+            <div class="card-sweep-shine"></div>
+            <h2><i class="fa-solid fa-compass icon-overview" aria-hidden="true"></i> Overview</h2>
+            <p>My central digital portal. Here you can find my official social accounts, current technical projects, and direct contact options.</p>
+        </section>
+
+        <!-- Category 1: Direct Communication -->
+        <section class="glass-card">
+            <div class="card-sweep-shine"></div>
+            <h2><i class="fa-solid fa-comments icon-comm" aria-hidden="true"></i> Direct Communication</h2>
+            <div class="grid-buttons">
+                <a href="mailto:ahmad@anjum.pro" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-solid fa-envelope btn-icon icon-email" aria-hidden="true"></i>
+                    <span class="btn-text">Email</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+                <a href="https://t.me/muhammad_ahmad_anjum" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-telegram btn-icon icon-telegram" aria-hidden="true"></i>
+                    <span class="btn-text">Telegram</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+                <a href="https://discord.com/users/1290513391709982774" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-discord btn-icon icon-discord" aria-hidden="true"></i>
+                    <span class="btn-text">Discord</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Category 2: Professional -->
+        <section class="glass-card">
+            <div class="card-sweep-shine"></div>
+            <h2><i class="fa-solid fa-briefcase icon-pro" aria-hidden="true"></i> Professional</h2>
+            <div class="grid-buttons">
+                <a href="https://www.linkedin.com/in/muhammadahmadanjum" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-linkedin btn-icon icon-linkedin" aria-hidden="true"></i>
+                    <span class="btn-text">LinkedIn</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+                <a href="https://github.com/muhammadahmadanjum19" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-github btn-icon icon-github" aria-hidden="true"></i>
+                    <span class="btn-text">GitHub</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Category 3: Social -->
+        <section class="glass-card">
+            <div class="card-sweep-shine"></div>
+            <h2><i class="fa-solid fa-users icon-social" aria-hidden="true"></i> Social</h2>
+            <div class="grid-buttons">
+                <a href="https://x.com/m_ahmad_anjum" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-x-twitter btn-icon icon-x" aria-hidden="true"></i>
+                    <span class="btn-text">X</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+                <a href="https://www.facebook.com/muhammadahmadanjum.19" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-facebook btn-icon icon-facebook" aria-hidden="true"></i>
+                    <span class="btn-text">Facebook</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+                <a href="https://www.reddit.com/user/muhammad_ahmad_anjum" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-reddit btn-icon icon-reddit" aria-hidden="true"></i>
+                    <span class="btn-text">Reddit</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Category 4: Gaming & Media -->
+        <section class="glass-card">
+            <div class="card-sweep-shine"></div>
+            <h2><i class="fa-solid fa-gamepad icon-media" aria-hidden="true"></i> Gaming & Media</h2>
+            <div class="grid-buttons">
+                <a href="https://www.xbox.com/en-US/play/user/BLACKOT9367" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-xbox btn-icon icon-xbox" aria-hidden="true"></i>
+                    <span class="btn-text">Xbox</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+                <a href="https://open.spotify.com/user/31hgcnpl7imrjnil62mlmded3xci?si=28cba69f44d34da2" target="_blank" rel="noopener noreferrer" class="btn-premium">
+                    <span class="btn-glow-pill"></span>
+                    <i class="fa-brands fa-spotify btn-icon icon-spotify" aria-hidden="true"></i>
+                    <span class="btn-text">Spotify</span>
+                    <i class="fa-solid fa-arrow-right arrow-icon" aria-hidden="true"></i>
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 Muhammad Ahmad Anjum. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <!-- Full Embedded Script Engine with Cinematic Loader & Cursor Tracker -->
+    <script>
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('page-loader');
+            setTimeout(() => {
+                loader.classList.add('fade-out');
+                document.body.classList.add('loaded');
+            }, 200); // 200ms parse delay + 800ms exit transition = precise 1-second cadence
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursor = document.getElementById('custom-cursor');
+            const glow = document.getElementById('cursor-glow');
+
+            window.addEventListener('mousemove', e => {
+                const x = e.clientX;
+                const y = e.clientY;
+                
+                cursor.style.left = `${x}px`;
+                cursor.style.top = `${y}px`;
+                glow.style.left = `${x}px`;
+                glow.style.top = `${y}px`;
+
+                // Button shimmer tracking
+                document.querySelectorAll('.btn-premium').forEach(btn => {
+                    const rect = btn.getBoundingClientRect();
+                    const bx = x - rect.left;
+                    const by = y - rect.top;
+                    btn.style.setProperty('--mouse-x', `${bx}px`);
+                    btn.style.setProperty('--mouse-y', `${by}px`);
+                });
+            });
+
+            // Interactive scale on click & hover
+            document.querySelectorAll('a, button').forEach(el => {
+                el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+                el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+            });
+
+            document.addEventListener('mousedown', () => cursor.classList.add('clicked'));
+            document.addEventListener('mouseup', () => cursor.classList.remove('clicked'));
+
+            // Executive Console Telemetry Badge
+            console.log(
+                '%c ANJUM.PRO %c Cinematic Engine & Custom Cursor Active ',
+                'background: #a855f7; color: #ffffff; font-weight: bold; padding: 4px 8px; border-radius: 4px 0 0 4px;',
+                'background: #030206; color: #e9d5ff; padding: 4px 8px; border-radius: 0 4px 4px 0;'
+            );
+        });
+    </script>
+</body>
+</html>
