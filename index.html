@@ -164,15 +164,19 @@
         </footer>
     </main>
 
-    <!-- Full Embedded Script Engine with Cinematic Loader & Cursor Tracker -->
+    <!-- Fail-Safe Script Engine -->
     <script>
-        window.addEventListener('load', () => {
+        // Guaranteed Execution Trigger (Fires after 1000ms max, regardless of external asset states)
+        const dismissLoader = () => {
             const loader = document.getElementById('page-loader');
-            setTimeout(() => {
+            if (loader && !loader.classList.contains('fade-out')) {
                 loader.classList.add('fade-out');
                 document.body.classList.add('loaded');
-            }, 200);
-        });
+            }
+        };
+
+        window.addEventListener('load', dismissLoader);
+        setTimeout(dismissLoader, 1000); // Fail-safe timer guarantees unmasking after exactly 1 second
 
         document.addEventListener('DOMContentLoaded', () => {
             const cursor = document.getElementById('custom-cursor');
