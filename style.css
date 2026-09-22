@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ANJUM.PRO — LUXURY REFINED OBSIDIAN ENGINE (NATIVE CURSOR)
+   ANJUM.PRO — LUXURY REFINED OBSIDIAN ENGINE (NATIVE CURSOR FIX)
    ========================================================================== */
 
 :root {
@@ -24,6 +24,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    cursor: auto !important;
 }
 
 html {
@@ -31,6 +32,7 @@ html {
     color-scheme: dark only;
     font-size: 16px;
     scroll-behavior: smooth;
+    cursor: auto !important;
 }
 
 body {
@@ -42,6 +44,7 @@ body {
     position: relative;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    cursor: auto !important;
 }
 
 /* --------------------------------------------------------------------------
