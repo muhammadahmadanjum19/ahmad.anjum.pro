@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 262 44" role="img" aria-label="BLACKOT">
+  <title>BLACKOT</title>
+  <defs><clipPath id="box"><rect x="-2" y="0" width="262" height="40"/></clipPath></defs>
+  <g clip-path="url(#box)" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="square" stroke-linejoin="miter">
+    <path d="M3 3V37M3 3H13a7.5 7.5 0 0 1 0 15H3M3 18H15a9.5 9.5 0 0 1 0 19H3"/>
+    <g transform="translate(37)"><path d="M3 3V37H21"/></g>
+    <g transform="translate(68)"><path d="M3 38L15 4.5L27 38M8.5 27H21.5" stroke-linecap="butt" stroke-linejoin="bevel"/></g>
+    <g transform="translate(108)"><path d="M27.7 9.1A14 17 0 1 0 27.7 30.9" stroke-linecap="butt"/></g>
+    <g transform="translate(148)"><path d="M3 3V37"/><path d="M27 -2L5 22M11 15.1L28 42" stroke-linecap="butt"/></g>
+    <g transform="translate(187)"><ellipse cx="17" cy="20" rx="14" ry="17"/></g>
+    <g transform="translate(230)"><path d="M3 3H25M14 3V37"/></g>
+  </g>
+</svg>

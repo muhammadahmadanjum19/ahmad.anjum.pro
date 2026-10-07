@@ -1,0 +1,17 @@
+{
+  "name": "Muhammad Ahmad Anjum | Official Personal Hub",
+  "short_name": "BLACKOT",
+  "description": "Official personal hub of Muhammad Ahmad Anjum: social accounts, technical projects and direct contact options.",
+  "lang": "en",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#030307",
+  "theme_color": "#030307",
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
