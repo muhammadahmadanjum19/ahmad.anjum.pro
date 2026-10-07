@@ -1,9 +1,9 @@
 /* ==========================================================================
-   anjum.pro — BLACKOT
-   Engine: lensed black hole (WebGL), boot sequence, width-warping name,
-   scroll-lit statement, velocity ticker, ledger spotlight, theme reveal.
-   Everything degrades: no WebGL -> CSS ring, reduced motion -> static,
-   no JS -> plain, fully readable HTML.
+   anjum.pro
+   Engine: startup screen, width-warping name, scroll-lit statement,
+   velocity ticker, ledger spotlight, theme reveal.
+   Everything degrades: reduced motion -> static, no JS -> plain, fully
+   readable HTML.
    ========================================================================== */
 (() => {
     'use strict';
@@ -30,6 +30,28 @@
     const local = safe('localStorage');
     const session = safe('sessionStorage');
 
+    /* Split an element's text into words and letters (letters are .wm-l). */
+    function splitLetters(el) {
+        const words = el.textContent.trim().split(/\s+/);
+        const out = [];
+        el.textContent = '';
+        words.forEach((word, wi) => {
+            const w = doc.createElement('span');
+            w.className = 'wd';
+            Array.from(word).forEach((ch) => {
+                const l = doc.createElement('span');
+                l.className = 'wm-l';
+                l.textContent = ch;
+                l.style.setProperty('--i', String(out.length));
+                w.appendChild(l);
+                out.push(l);
+            });
+            el.appendChild(w);
+            if (wi < words.length - 1) el.appendChild(doc.createTextNode(' '));
+        });
+        return out;
+    }
+
     /* ---------- Shared pointer + scroll state ---------- */
     const pointer = { x: innerWidth * 0.5, y: innerHeight * 0.5, nx: 0, ny: 0, active: false, last: 0 };
     const scroll = { y: window.scrollY, v: 0 };
@@ -45,278 +67,6 @@
     window.addEventListener('pointerleave', () => { pointer.active = false; });
     doc.addEventListener('mouseleave', () => { pointer.active = false; });
     window.addEventListener('scroll', () => { scroll.y = window.scrollY; }, { passive: true });
-
-    /* ======================================================================
-       VOID — lensed black hole with accretion disc (WebGL fragment shader)
-       ====================================================================== */
-    const Void = (() => {
-        const canvas = $('#void');
-        const fallback = $('#voidFallback');
-        let gl = null, program = null, raf = 0, ok = false;
-        let scale = 1;
-        let W = 1, H = 1;
-        const dprCap = 1.5;
-        const L = { cx: 0, cy: 0, r: 80, wide: true };
-        const S = { ignite: reduce ? 1 : 0, igniteFrom: 0, igniteDur: 0, light: 0, lightTarget: 0, tx: 0, ty: 0 };
-        const U = {};
-        let t0 = performance.now();
-        let frames = 0, accDt = 0, lastNow = 0;
-
-        const VERT = 'attribute vec2 p; void main(){ gl_Position = vec4(p, 0.0, 1.0); }';
-        const FRAG = `
-precision highp float;
-uniform vec2  u_res;
-uniform float u_time;
-uniform vec2  u_center;
-uniform float u_radius;
-uniform vec2  u_tilt;
-uniform float u_ignite;
-uniform float u_light;
-uniform float u_fade;
-
-float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
-float noise(vec2 p){
-    vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
-    return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
-               mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y);
-}
-float fbm(vec2 p){
-    float v = 0.0, a = 0.5;
-    for (int i = 0; i < 4; i++) { v += a * noise(p); p = p * 2.03 + vec2(1.7, 9.2); a *= 0.5; }
-    return v;
-}
-vec3 ramp(float t){
-    vec3 c0 = vec3(0.10, 0.06, 0.45);
-    vec3 c1 = vec3(0.47, 0.24, 1.00);
-    vec3 c2 = vec3(0.84, 0.70, 1.00);
-    vec3 c3 = vec3(1.00, 0.97, 0.94);
-    vec3 c = mix(c0, c1, smoothstep(0.0, 0.4, t));
-    c = mix(c, c2, smoothstep(0.35, 0.75, t));
-    return mix(c, c3, smoothstep(0.72, 1.0, t));
-}
-/* Differentially rotating turbulence. Two phases cross-fade so it never winds up. */
-float swirl(vec2 d, float rho, float t){
-    float T = 16.0;
-    float w = 1.1 / pow(rho, 1.5);
-    float ph1 = mod(t, T), ph2 = mod(t + T * 0.5, T);
-    float a1 = ph1 * w, a2 = ph2 * w;
-    vec2 p1 = vec2(cos(a1) * d.x - sin(a1) * d.y, sin(a1) * d.x + cos(a1) * d.y);
-    vec2 p2 = vec2(cos(a2) * d.x - sin(a2) * d.y, sin(a2) * d.x + cos(a2) * d.y);
-    float s = sin(3.14159265 * ph1 / T); s *= s;
-    return mix(fbm(p2 * 2.4 + 7.3), fbm(p1 * 2.4), s);
-}
-
-void main(){
-    vec2 frag = gl_FragCoord.xy;
-    vec2 pc = (frag - u_center) / u_radius;
-    float r = length(pc);
-
-    float rot = -0.30 + 0.16 * u_tilt.x;
-    float cr = cos(rot), sr = sin(rot);
-    vec2 q = vec2(cr * pc.x - sr * pc.y, sr * pc.x + cr * pc.y);
-    float inc = clamp(0.19 + 0.09 * u_tilt.y, 0.08, 0.4);
-
-    float ig = smoothstep(0.0, 1.0, u_ignite);
-    float grow = mix(0.25, 1.0, ig);
-    vec3 E = vec3(0.0);
-
-    /* Stars, bent outward around the hole */
-    vec2 sp = frag + pc * u_radius * (1.1 / (r * r + 0.55));
-    vec2 g = sp / 28.0; vec2 id = floor(g); vec2 f = fract(g);
-    vec2 sc = vec2(hash(id + 3.1), hash(id + 7.7)) * 0.7 + 0.15;
-    float h = hash(id);
-    float st = smoothstep(0.075, 0.0, length(f - sc)) * step(0.80, h);
-    st *= 0.55 + 0.45 * sin(u_time * (0.8 + h * 2.0) + h * 40.0);
-    E += mix(vec3(0.65, 0.72, 1.0), vec3(1.0, 0.86, 0.95), hash(id + 9.0)) * st * smoothstep(1.05, 1.5, r) * 0.85 * ig;
-
-    /* Primary accretion disc (flat ellipse; its near side crosses in front of the hole) */
-    vec2 d = vec2(q.x, q.y / inc);
-    float rho = length(d);
-    float rin = 1.45;
-    float rout = 5.0 * grow;
-    float band = smoothstep(rin, rin + 0.25, rho) * (1.0 - smoothstep(rout * 0.55, rout, rho));
-    if (band > 0.001) {
-        float prof = pow(rin / rho, 2.0);
-        float tex = swirl(d, rho, u_time + 3.0);
-        float dop = clamp(1.0 + 0.8 * (-q.x / max(rho, 0.5)), 0.35, 1.9);
-        float I = prof * (0.55 + 1.1 * tex) * dop * band;
-        float T = clamp(1.15 * pow(rin / rho, 1.1) + 0.12 * (dop - 1.0), 0.0, 1.0);
-        float vis = (q.y < 0.0) ? 1.0 : smoothstep(0.98, 1.04, r);
-        E += ramp(T) * I * 2.6 * vis * ig;
-    }
-
-    /* Lensed far side of the disc, arching over and under the hole */
-    float arc = exp(-pow((r - 1.0) / 0.55, 2.0)) * smoothstep(1.0, 1.06, r);
-    float vert = pow(abs(q.y) / max(r, 0.001), 1.4);
-    float beam = clamp(1.0 + 0.5 * (-q.x / max(r, 0.3)), 0.4, 1.6);
-    float tex2 = 0.8 + 0.4 * noise(vec2(atan(q.y, q.x) * 2.0, r * 6.0 - u_time * 0.2));
-    E += ramp(clamp(0.95 - (r - 1.0) * 0.9, 0.0, 1.0)) * arc * (0.25 + 1.5 * vert) * beam * tex2 * 1.9 * ig;
-
-    /* Photon ring + soft halo */
-    float ring = exp(-pow((r - 1.035) / 0.028, 2.0)) * smoothstep(0.98, 1.0, r);
-    E += vec3(1.0, 0.96, 1.0) * ring * 1.6 * (0.85 + 0.15 * sin(u_time * 0.7)) * ig;
-    float halo = exp(-max(r - 1.0, 0.0) * 0.9) * 0.10 * smoothstep(0.98, 1.02, r);
-    float plane = exp(-abs(q.y) * 1.6) * exp(-abs(q.x) * 0.22) * 0.07;
-    E += vec3(0.45, 0.25, 1.0) * (halo + plane) * ig;
-
-    vec3 c = (1.0 - exp(-E * 1.25)) * u_fade;
-
-    vec3 darkCol = vec3(0.0118, 0.0118, 0.0275) + c;
-
-    float lum = max(max(c.r, c.g), c.b);
-    float lt = clamp(lum * 1.2, 0.0, 1.0);
-    vec3 bgL = vec3(0.949, 0.945, 0.973);
-    vec3 base = mix(vec3(0.02, 0.012, 0.05), bgL, smoothstep(0.985, 1.0, r));
-    vec3 inkc = mix(vec3(0.70, 0.58, 1.0), vec3(0.30, 0.14, 0.80), smoothstep(0.15, 0.55, lt));
-    inkc = mix(inkc, vec3(0.05, 0.02, 0.14), smoothstep(0.55, 1.0, lt));
-    vec3 lightCol = mix(base, inkc, smoothstep(0.06, 0.7, lt));
-
-    vec3 col = mix(darkCol, lightCol, u_light);
-    col += (hash(frag + u_time) - 0.5) / 255.0;
-    gl_FragColor = vec4(col, 1.0);
-}`;
-
-        function compile(type, src) {
-            const s = gl.createShader(type);
-            gl.shaderSource(s, src);
-            gl.compileShader(s);
-            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
-                console.warn('[void] shader error:', gl.getShaderInfoLog(s));
-                return null;
-            }
-            return s;
-        }
-
-        function init() {
-            try {
-                gl = canvas.getContext('webgl', { antialias: false, alpha: false, depth: false, stencil: false })
-                    || canvas.getContext('experimental-webgl');
-                if (!gl) return false;
-                const vs = compile(gl.VERTEX_SHADER, VERT);
-                const fs = compile(gl.FRAGMENT_SHADER, FRAG);
-                if (!vs || !fs) return false;
-                program = gl.createProgram();
-                gl.attachShader(program, vs);
-                gl.attachShader(program, fs);
-                gl.linkProgram(program);
-                if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return false;
-                gl.useProgram(program);
-                const buf = gl.createBuffer();
-                gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-                gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-                const loc = gl.getAttribLocation(program, 'p');
-                gl.enableVertexAttribArray(loc);
-                gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-                ['u_res', 'u_time', 'u_center', 'u_radius', 'u_tilt', 'u_ignite', 'u_light', 'u_fade']
-                    .forEach((n) => { U[n] = gl.getUniformLocation(program, n); });
-                canvas.addEventListener('webglcontextlost', (e) => {
-                    e.preventDefault();
-                    ok = false;
-                    cancelAnimationFrame(raf);
-                    root.classList.add('no-webgl');
-                });
-                ok = true;
-                return true;
-            } catch (err) {
-                console.warn('[void] WebGL unavailable:', err);
-                return false;
-            }
-        }
-
-        function layout() {
-            const w = innerWidth, h = innerHeight;
-            L.wide = w >= 900;
-            L.cx = L.wide ? w * 0.745 : w * 0.5;
-            L.cy = L.wide ? h * 0.47 : h * 0.26;
-            L.r = L.wide ? Math.min(w * 0.07, h * 0.15) : Math.min(w * 0.11, h * 0.08);
-            if (fallback) {
-                fallback.style.setProperty('--fx', L.cx + 'px');
-                fallback.style.setProperty('--fy', L.cy + 'px');
-                fallback.style.setProperty('--fs', L.r * 9 + 'px');
-            }
-        }
-
-        function resize() {
-            const dpr = Math.min(window.devicePixelRatio || 1, dprCap) * scale;
-            W = Math.max(1, Math.round(innerWidth * dpr));
-            H = Math.max(1, Math.round(innerHeight * dpr));
-            if (canvas.width !== W || canvas.height !== H) {
-                canvas.width = W;
-                canvas.height = H;
-            }
-            if (gl) gl.viewport(0, 0, W, H);
-        }
-
-        function draw(now) {
-            const t = reduce ? 9 : (now - t0) / 1000;
-            if (S.igniteDur > 0) {
-                S.ignite = clamp((now - S.igniteFrom) / S.igniteDur, 0, 1);
-            }
-            S.light = reduce ? S.lightTarget : lerp(S.light, S.lightTarget, 0.1);
-            S.tx = lerp(S.tx, pointer.active ? pointer.nx : 0, 0.05);
-            S.ty = lerp(S.ty, pointer.active ? pointer.ny : 0, 0.05);
-
-            const prog = scroll.y / innerHeight;
-            const fade = 1 - 0.8 * smooth(0.15, 1.3, prog);
-            const k = 1 - 0.22 * clamp(prog, 0, 1);
-            const sx = W / innerWidth, sy = H / innerHeight;
-            const cx = (L.cx + S.tx * 14) * sx;
-            const cy = H - (L.cy - scroll.y * 0.45 - S.ty * 10) * sy;
-
-            gl.uniform2f(U.u_res, W, H);
-            gl.uniform1f(U.u_time, t);
-            gl.uniform2f(U.u_center, cx, cy);
-            gl.uniform1f(U.u_radius, L.r * k * sx);
-            gl.uniform2f(U.u_tilt, S.tx, S.ty);
-            gl.uniform1f(U.u_ignite, S.ignite);
-            gl.uniform1f(U.u_light, S.light);
-            gl.uniform1f(U.u_fade, fade);
-            gl.drawArrays(gl.TRIANGLES, 0, 3);
-        }
-
-        function loop(now) {
-            raf = requestAnimationFrame(loop);
-            if (!ok || doc.hidden) { lastNow = now; return; }
-            const dt = now - lastNow;
-            lastNow = now;
-            frames++;
-            // Past the hero the effect is a faint backdrop: render every other frame.
-            if (scroll.y > innerHeight * 1.3 && (frames & 1)) return;
-            draw(now);
-            // Adaptive resolution: keep the animation smooth on weak GPUs.
-            if (frames > 40) {
-                accDt += dt;
-                if (frames % 45 === 0) {
-                    const avg = accDt / 45;
-                    accDt = 0;
-                    if (avg > 26 && scale > 0.55) { scale = Math.max(0.55, scale * 0.8); resize(); }
-                }
-            }
-        }
-
-        function start() {
-            if (!ok) return;
-            resize();
-            if (reduce) { draw(performance.now()); return; }
-            lastNow = performance.now();
-            raf = requestAnimationFrame(loop);
-        }
-
-        function redrawStatic() { if (ok && reduce) { resize(); draw(performance.now()); } }
-
-        return {
-            init, start, layout, redrawStatic,
-            resize() { layout(); resize(); redrawStatic(); },
-            center() { return { x: L.cx, y: L.cy, r: L.r }; },
-            ignite(ms) { S.igniteFrom = performance.now(); S.igniteDur = ms; },
-            setLight(isLight, instant) {
-                S.lightTarget = isLight ? 1 : 0;
-                if (instant) S.light = S.lightTarget;
-                redrawStatic();
-            },
-            get ok() { return ok; },
-        };
-    })();
 
     /* ======================================================================
        NAME — letters bend toward the pointer, like light near a mass
@@ -352,7 +102,7 @@ void main(){
             const wide = innerWidth >= 900;
             const hero = h1.closest('.hero');
             const pad = parseFloat(getComputedStyle(hero).paddingLeft) || 20;
-            const avail = wide ? Math.min(innerWidth * 0.56, 940) : innerWidth - pad * 2;
+            const avail = wide ? Math.min(innerWidth * 0.72, 1100) : innerWidth - pad * 2;
             h1.style.setProperty('--name-fs', '100px');
             letters.forEach((l) => { l.style.fontStretch = FIT + '%'; });
             const need = Math.max(...lines.map((l) => l.getBoundingClientRect().width));
@@ -530,19 +280,18 @@ void main(){
     function initTheme() {
         const btn = $('#themeBtn');
         const meta = $('meta[name="theme-color"]');
+        const LIGHT = '#d9d8e4', DARK = '#030307';
         const current = () => root.getAttribute('data-theme') || 'dark';
 
-        function apply(theme, instant) {
+        function apply(theme) {
             root.setAttribute('data-theme', theme);
             local.set('anjum_pro_theme', theme);
             btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
-            if (meta) meta.setAttribute('content', theme === 'dark' ? '#030307' : '#f2f1f8');
-            Void.setLight(theme === 'light', instant);
+            if (meta) meta.setAttribute('content', theme === 'dark' ? DARK : LIGHT);
         }
         // Reflect the theme that was set before first paint.
         btn.setAttribute('aria-label', current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
-        if (meta) meta.setAttribute('content', current() === 'dark' ? '#030307' : '#f2f1f8');
-        Void.setLight(current() === 'light', true);
+        if (meta) meta.setAttribute('content', current() === 'dark' ? DARK : LIGHT);
 
         btn.addEventListener('click', () => {
             const next = current() === 'dark' ? 'light' : 'dark';
@@ -550,7 +299,7 @@ void main(){
                 const r = btn.getBoundingClientRect();
                 const x = r.left + r.width / 2, y = r.top + r.height / 2;
                 const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
-                const vt = doc.startViewTransition(() => apply(next, true));
+                const vt = doc.startViewTransition(() => apply(next));
                 vt.ready.then(() => {
                     root.animate(
                         { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${end}px at ${x}px ${y}px)`] },
@@ -558,7 +307,7 @@ void main(){
                     );
                 }).catch(() => {});
             } else {
-                apply(next, false);
+                apply(next);
             }
         });
     }
@@ -671,8 +420,9 @@ void main(){
     }
 
     function initFooterMark() {
-        const wm = $('#footWm');
+        const wm = $('#footName');
         if (!wm) return;
+        splitLetters(wm);
         if (reduce || !('IntersectionObserver' in window)) { wm.classList.add('in'); return; }
         const io = new IntersectionObserver((es) => {
             if (es[0].isIntersecting) { wm.classList.add('in'); io.disconnect(); }
@@ -681,13 +431,13 @@ void main(){
     }
 
     /* ======================================================================
-       BOOT — count up, then the page opens out of the black hole
+       BOOT — the name lights up while a counter runs, then the page opens
        ====================================================================== */
     async function boot() {
         const loader = $('#loader');
-        const ring = $('#loaderRing');
         const num = $('#loaderNum');
-        const letters = $$('.wm-l', loader);
+        const nameEl = $('#loaderName');
+        const letters = splitLetters(nameEl);
         const seen = session.get('anjum_pro_seen') === '1';
 
         // Ask for the exact faces we measure with, so the name is fitted to the real font.
@@ -702,7 +452,6 @@ void main(){
 
         const finish = () => {
             loader.classList.add('is-done');
-            ring.classList.add('is-done');
             root.classList.add('is-ready');
             session.set('anjum_pro_seen', '1');
         };
@@ -710,18 +459,10 @@ void main(){
         if (reduce) {
             await fontsReady;
             Name.fit();
-            Void.ignite(1);
             finish();
             return;
         }
 
-        const c = Void.center();
-        [loader, ring].forEach((el) => {
-            el.style.setProperty('--hx', c.x + 'px');
-            el.style.setProperty('--hy', c.y + 'px');
-            el.style.setProperty('--hr', '0px');
-        });
-        ring.style.setProperty('--ro', '0');
         Name.hide();
 
         let skip = false;
@@ -741,7 +482,7 @@ void main(){
                 let n = Math.round(eased * 100);
                 if (!fontsDone && n > 99) n = 99;
                 num.textContent = String(n);
-                letters.forEach((l, i) => l.classList.toggle('on', eased * 7.2 > i + 0.2));
+                letters.forEach((l, i) => l.classList.toggle('on', eased * letters.length * 1.05 > i + 0.2));
                 if (p < 1 || !fontsDone) requestAnimationFrame(step);
                 else resolve();
             })(t0);
@@ -750,26 +491,14 @@ void main(){
         Name.fit();
         num.textContent = '100';
         letters.forEach((l) => l.classList.add('on'));
-        await sleep(seen ? 80 : 220);
+        await sleep(seen ? 80 : 260);
 
-        // Open the hole. It starts exactly where the singularity will be.
-        const far = Math.hypot(Math.max(c.x, innerWidth - c.x), Math.max(c.y, innerHeight - c.y)) + 80;
-        const openMs = seen ? 700 : 1150;
-        const o0 = performance.now();
-        Void.ignite(seen ? 1100 : 2000);
-        setTimeout(() => root.classList.add('is-ready'), openMs * 0.35);
+        // Open: fade the startup screen out and reveal the page.
+        const openMs = seen ? 500 : 800;
+        loader.classList.add('is-leaving');
+        setTimeout(() => root.classList.add('is-ready'), openMs * 0.3);
         setTimeout(() => { Name.decode().then(() => Name.startWarp()); }, openMs * 0.4);
-
-        await new Promise((resolve) => {
-            (function step(now) {
-                const p = clamp((now - o0) / openMs, 0, 1);
-                const r = inOutCubic(p) * far;
-                loader.style.setProperty('--hr', r.toFixed(1) + 'px');
-                ring.style.setProperty('--hr', r.toFixed(1) + 'px');
-                ring.style.setProperty('--ro', String(Math.min(1, p * 8) * (1 - smooth(0.7, 1, p))));
-                if (p < 1) requestAnimationFrame(step); else resolve();
-            })(o0);
-        });
+        await sleep(openMs);
         finish();
     }
 
@@ -777,10 +506,6 @@ void main(){
        INIT
        ====================================================================== */
     function init() {
-        if (!Void.init()) root.classList.add('no-webgl');
-        Void.layout();
-        Void.start();
-
         Name.prepare();
         Statement.prepare();
         Strip.build();
@@ -798,7 +523,6 @@ void main(){
         window.addEventListener('resize', () => {
             clearTimeout(rz);
             rz = setTimeout(() => {
-                Void.resize();
                 Name.fit();
                 Strip.build();
                 Statement.update();
@@ -816,9 +540,6 @@ void main(){
 
         boot();
 
-        if (window.console && console.log) {
-            console.log('%c BLACKOT %c anjum.pro ', 'background:#9a6bff;color:#fff;font-weight:700;padding:3px 8px;border-radius:4px 0 0 4px', 'background:#06060c;color:#d8ccff;padding:3px 8px;border-radius:0 4px 4px 0');
-        }
     }
 
     if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', init);
